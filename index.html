@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MY VOICE AI</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 20px;
+  background: #101522;
+  color: white;
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 24px;
+  background: #1d2638;
+  border-radius: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #52e5b8;
+}
+
+p {
+  text-align: center;
+  color: #c5ccda;
+}
+
+textarea, select {
+  width: 100%;
+  padding: 14px;
+  margin: 12px 0;
+  border: 1px solid #46536a;
+  border-radius: 10px;
+  background: #101522;
+  color: white;
+  font-size: 16px;
+}
+
+button {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  background: #52e5b8;
+  color: #101522;
+  font-size: 17px;
+  font-weight: bold;
+}
+
+button:active {
+  opacity: 0.8;
+}
+
+.note {
+  margin-top: 20px;
+  font-size: 13px;
+  line-height: 1.7;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>🎙️ MY VOICE AI</h1>
+
+<p>Turn Your Text Into Speech</p>
+
+<textarea id="text" rows="6"
+placeholder="ဒီနေရာမှာ အသံထုတ်ချင်တဲ့စာကို ရိုက်ထည့်ပါ..."></textarea>
+
+<select id="voice">
+<option value="">အသံရွေးချယ်ပါ</option>
+</select>
+
+<button onclick="speakText()">▶ အသံထုတ်မယ်</button>
+
+<button onclick="stopSpeech()"
+style="background:#ff6577">
+■ အသံရပ်မယ်
+</button>
+
+<p class="note">
+ဤအက်ပ်သည် ဖုန်းတွင် ရရှိနိုင်သော Text-to-Speech အသံကို အသုံးပြုသည်။
+AI Voice Clone စနစ်ကို သီးခြားချိတ်ဆက်ရန် လိုအပ်သည်။
+</p>
+
+</div>
+
+<script>
+const voiceSelect = document.getElementById("voice");
+
+function loadVoices() {
+  const voices = speechSynthesis.getVoices();
+  voiceSelect.innerHTML =
+    '<option value="">အသံရွေးချယ်ပါ</option>';
+
+  voices.forEach((voice, index) => {
+    const option = document.createElement("option");
+    option.value = index;
+    option.textContent =
+      voice.name + " (" + voice.lang + ")";
+    voiceSelect.appendChild(option);
+  });
+}
+
+function speakText() {
+  const text = document.getElementById("text").value.trim();
+
+  if (!text) {
+    alert("အသံထုတ်ချင်တဲ့စာကို အရင်ထည့်ပါ။");
+    return;
+  }
+
+  speechSynthesis.cancel();
+
+  const utterance = new SpeechSynthesisUtterance(text);
+  const voices = speechSynthesis.getVoices();
+  const selected = voiceSelect.value;
+
+  if (selected !== "" && voices[selected]) {
+    utterance.voice = voices[selected];
+  }
+
+  utterance.rate = 0.9;
+  utterance.pitch = 1;
+
+  speechSynthesis.speak(utterance);
+}
+
+function stopSpeech() {
+  speechSynthesis.cancel();
+}
+
+speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
+</script>
+
+</body>
+</html>
